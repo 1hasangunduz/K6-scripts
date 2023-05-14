@@ -1,0 +1,14 @@
+{
+  "name": "k6-scripts",
+  "version": "1.0.0",
+  "description": "this is k6 scripts example",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hasan Automation",
+  "license": "ISC",
+  "dependencies": {
+    "k6": "0.0.0"
+  }
+}
