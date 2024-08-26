@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e41f68b4-92b7-4f6d-82bb-0174a31c3480" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/specs/HKPerformance.js" afterDir="false" />
+    <list default="true" id="e41f68b4-92b7-4f6d-82bb-0174a31c3480" name="Changes" comment="*v.1">
+      <change afterPath="$PROJECT_DIR$/specs/HKPerformance1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/specs/HKPerformance_1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/specs/RandomRequestForPages.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/specs/HKPerformance.js" beforeDir="false" afterPath="$PROJECT_DIR$/specs/HKPerformance.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +42,9 @@
   "associatedIndex": 8
 }]]></component>
   <component name="ProjectId" id="2PQD2HWLDgIgFZeutDrDRapxP48" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -53,7 +57,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/hasan.gunduz/Desktop/performance/K6-scripts",
+    "last_opened_file_path": "/Users/hasan.gunduz/Desktop/performance/K6-scripts/specs",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -62,6 +66,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/specs" />
+    </key>
+  </component>
   <component name="RunManager" selected="Node.js.HKPerformance.js">
     <configuration name="HKPerformance.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/specs/HKPerformance.js" working-dir="$PROJECT_DIR$/specs">
       <method v="2" />
@@ -92,11 +101,24 @@
       <option name="presentableId" value="Default" />
       <updated>1683380203116</updated>
       <workItem from="1683380204178" duration="108000" />
-      <workItem from="1724659078738" duration="1087000" />
+      <workItem from="1724659078738" duration="7138000" />
     </task>
+    <task id="LOCAL-00001" summary="*v.1">
+      <option name="closed" value="true" />
+      <created>1724660341390</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1724660341390</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="*v.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="*v.1" />
   </component>
 </project>
