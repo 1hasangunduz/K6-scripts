@@ -1,7 +1,5 @@
 # K6-scripts
 
-run as : You must write command line ; 'k6 run getapi.js' 
-
 ```javascript
 "https://grafana.com/docs/k6/latest/set-up/install-k6/"
 ```
@@ -15,6 +13,13 @@ run as : You must write command line ; 'k6 run getapi.js'
 
 "K6 is a modern load testing tool, building on Load Impact's years of experience in the load and performance testing industry. It provides a clean, approachable scripting API, local and cloud execution, and flexible configuration."
 
+```
+
+
+```javascript
+"export K6_CLOUD_TOKEN=<your_api_token>"
+"echo $K6_CLOUD_TOKEN"
+"k6 run -o cloud RandomRequestForPages.js" 
 ```
 
 ```javascript

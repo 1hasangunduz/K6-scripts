@@ -1,6 +1,6 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
-import { Counter, Trend, Rate } from 'k6/metrics';
+import {check, sleep} from 'k6';
+import {Counter, Trend, Rate} from 'k6/metrics';
 
 /*
 * K6 kodu, test sırasında belirli sayfalara rastgele istekler gönderir. Kodunuzda belirtilen pages dizisi içindeki her bir sayfa URL'si,
@@ -33,16 +33,16 @@ export const options = {
             executor: 'ramping-vus', // Kullanıcı sayısının zamanla arttığı bir senaryo
             startVUs: 0, // Başlangıçtaki sanal kullanıcı sayısı
             stages: [
-                { duration: '1m', target: 20 }, // İlk 1 dakika sonunda 20 kullanıcıya ulaş
-                { duration: '2m', target: 50 }, // Sonraki 2 dakika içinde 50 kullanıcıya ulaş
-                { duration: '1m', target: 0 }, // Son 1 dakikada 0 kullanıcıya düş
+                {duration: '1m', target: 20}, // İlk 1 dakika sonunda 20 kullanıcıya ulaş
+                {duration: '2m', target: 50}, // Sonraki 2 dakika içinde 50 kullanıcıya ulaş
+                {duration: '1m', target: 0}, // Son 1 dakikada 0 kullanıcıya düş
             ],
             gracefulRampDown: '30s', // Yük azalırken kullanıcıların 30 saniye içinde düzgün şekilde tamamlanmasına izin verir
         },
         spike_load: {
             executor: 'per-vu-iterations', // Her bir sanal kullanıcı için belirli sayıda yineleme çalıştırır
             vus: 30, // Sanal kullanıcı sayısı
-            iterations: 300, // Her sanal kullanıcının çalıştıracağı yineleme sayısı
+            iterations: 300, // Her sanal kullanıcının çalıştıracağı iterator sayısı
             maxDuration: '3m', // Maksimum test süresi
         },
     },
@@ -56,7 +56,6 @@ export const options = {
 
 // Ana test fonksiyonu
 export default function () {
-    //const BASE_URL = 'https://www.hangikredi.com'; // Temel URL
     const BASE_URL = 'https://preprod.hangikredi.com'; // Temel URL
 
     // Sayfalardan rastgele birini seç
@@ -67,18 +66,18 @@ export default function () {
     let res = http.get(url);
 
     // Yanıtı kontrol etme ve hataları ele alma
-    check(res, {
+    let isStatus200 = check(res, {
         'status is 200': (r) => r.status === 200,
         'response body is not empty': (r) => r.body.length > 0,
     });
 
-    // Yanıtın durum kodunu kontrol et ve metrikleri güncelle
-    if (res.status === 200) {
-        console.log(`Successfully accessed ${url}`);
+    // Loglama
+    if (isStatus200) {
+        console.log(`Successfully accessed ${url} in ${res.timings.duration}ms. Response body length: ${res.body.length} bytes`);
         successRate.add(1); // Başarılı istek oranı arttırılır
         errorRate.add(0); // Hatalı istek oranı azaltılır
     } else {
-        console.error(`Failed to access ${url}. Status code: ${res.status}`);
+        console.error(`Failed to access ${url}. Status code: ${res.status}. Response time: ${res.timings.duration}ms`);
         errorCount.add(1); // Hata sayacı bir arttırılır
         successRate.add(0); // Başarısız istek oranı eklenir
         errorRate.add(1); // Hatalı istek oranı arttırılır
@@ -87,5 +86,12 @@ export default function () {
     // Yanıt süresi metriği kaydetme
     responseTimes.add(res.timings.duration); // Yanıt süresi metriğe eklenir
 
+    // Ekstra bilgileri loglama
+
+    console.log(`**************************************************`);
+    console.log(`Request URL: ${url}`);
+    console.log(`Request headers: ${JSON.stringify(res.request.headers)}`);
+    console.log(`Response headers: ${JSON.stringify(res.headers)}\n`);
+    console.log(`**************************************************`);
     sleep(1); // Sanal kullanıcıyı 1 saniye bekletir
 }
