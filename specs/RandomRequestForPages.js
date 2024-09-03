@@ -1,96 +1,189 @@
 import http from 'k6/http';
-import {check, sleep} from 'k6';
-import {Counter, Trend, Rate} from 'k6/metrics';
+import { check, sleep } from 'k6';
+import { Counter, Trend, Rate } from 'k6/metrics';
 
-/*
-* K6 kodu, test sırasında belirli sayfalara rastgele istekler gönderir. Kodunuzda belirtilen pages dizisi içindeki her bir sayfa URL'si,
-* test çalışırken rastgele seçilir ve bu sayfalara istekler gönderilir. Yani, test sırasında her bir sanal kullanıcı
-* bu sayfalardan birine istek yapar, ancak hangi sayfaya istek yapacağı her iterasyonda rastgele belirlenir.
-* */
-
-// Özel metrikler oluşturma
-let responseTimes = new Trend('custom_response_times'); // Özel bir trend metriği, yanıt süresini takip etmek için
-let errorCount = new Counter('errors'); // Hata sayacını oluşturur
-let successRate = new Rate('successful_requests'); // Başarılı istek oranını takip etmek için
-let errorRate = new Rate('error_requests'); // Hatalı istek oranını takip etmek için
-
-// Test edilecek sayfaların listesi
-const pages = [
-    '/hakkimizda/iletisim',
-    '/hakkimizda/kariyer',
-    '/hakkimizda/ekibimiz',
-];
+// Custom metrics
+let responseTimes = new Trend('custom_response_times');
+let errorCount = new Counter('errors');
+let successRate = new Rate('successful_requests');
+let errorRate = new Rate('error_requests');
 
 export const options = {
     scenarios: {
-        constant_load: {
-            executor: 'constant-vus', // Sabit sayıda sanal kullanıcı çalıştırmak için
-            vus: 20, // Sabit kullanıcı sayısı
-            duration: '1m', // Test süresi
+        housingloan_homepage: {
+            executor: 'constant-vus',
+            exec: 'housingLoanHomepage',
+            vus: 20,
+            duration: '1m',
         },
-        ramping_load: {
-            executor: 'ramping-vus', // Kullanıcı sayısının zamanla arttığı bir senaryo
-            startVUs: 0, // Başlangıçtaki sanal kullanıcı sayısı
-            stages: [
-                {duration: '1m', target: 20}, // İlk 1 dakika sonunda 20 kullanıcıya ulaş
-                {duration: '2m', target: 50}, // Sonraki 2 dakika içinde 50 kullanıcıya ulaş
-                {duration: '1m', target: 0}, // Son 1 dakikada 0 kullanıcıya düş
-            ],
-            gracefulRampDown: '30s', // Yük azalırken kullanıcıların 30 saniye içinde düzgün şekilde tamamlanmasına izin verir
+        housingloan_search: {
+            executor: 'constant-vus',
+            exec: 'housingLoanSearch',
+            vus: 20,
+            duration: '1m',
         },
-        spike_load: {
-            executor: 'per-vu-iterations', // Her bir sanal kullanıcı için belirli sayıda yineleme çalıştırır
-            vus: 30, // Sanal kullanıcı sayısı
-            iterations: 300, // Her sanal kullanıcının çalıştıracağı iterator sayısı
-            maxDuration: '3m', // Maksimum test süresi
+        housingloan_detail: {
+            executor: 'constant-vus',
+            exec: 'housingLoanDetail',
+            vus: 20,
+            duration: '1m',
         },
+        housingloan_recourse_forward: {
+            executor: 'constant-vus',
+            exec: 'housingLoanRecourseForward',
+            vus: 20,
+            duration: '1m',
+        },
+        housingloan_recourse_form: {
+            executor: 'constant-vus',
+            exec: 'housingLoanRecourseForm',
+            vus: 20,
+            duration: '1m',
+        },
+        housingloan_bank_list: {
+            executor: 'constant-vus',
+            exec: 'housingLoanBankList',
+            vus: 20,
+            duration: '1m',
+        },
+        vehicleloan_homepage: {
+            executor: 'constant-vus',
+            exec: 'vehicleLoanHomepage',
+            vus: 20,
+            duration: '1m',
+        },
+        vehicleloan_search: {
+            executor: 'constant-vus',
+            exec: 'vehicleLoanSearch',
+            vus: 20,
+            duration: '1m',
+        },
+        vehicleloan_detail: {
+            executor: 'constant-vus',
+            exec: 'vehicleLoanDetail',
+            vus: 20,
+            duration: '1m',
+        },
+        vehicleloan_recourse_forward: {
+            executor: 'constant-vus',
+            exec: 'vehicleLoanRecourseForward',
+            vus: 20,
+            duration: '1m',
+        },
+        vehicleloan_recourse_form: {
+            executor: 'constant-vus',
+            exec: 'vehicleLoanRecourseForm',
+            vus: 20,
+            duration: '1m',
+        },
+        vehicleloan_bank_list: {
+            executor: 'constant-vus',
+            exec: 'vehicleLoanBankList',
+            vus: 20,
+            duration: '1m',
+        }
     },
     thresholds: {
-        custom_response_times: ['p(95)<250'], // Yanıt süresinin %95'lik diliminde 250ms altında olmasını hedefler
-        successful_requests: ['rate>0.95'], // Başarılı istek oranının %95'in üzerinde olmasını hedefler
-        error_requests: ['rate<0.05'], // Hatalı istek oranının %5'ten az olmasını hedefler
-        errors: ['count<20'], // Hata sayısının 20'den az olmasını hedefler
+        custom_response_times: ['p(95)<250'],
+        successful_requests: ['rate>0.95'],
+        error_requests: ['rate<0.05'],
+        errors: ['count<20'],
     },
 };
 
-// Ana test fonksiyonu
-export default function () {
-    const BASE_URL = 'https://preprod.hangikredi.com'; // Temel URL
+const BASE_URL = 'https://preprod.hangikredi.com';
 
-    // Sayfalardan rastgele birini seç
-    const randomPage = pages[Math.floor(Math.random() * pages.length)];
-    const url = `${BASE_URL}${randomPage}`;
-
-    // GET isteği gönderilir ve yanıt alınır
+// Helper function to perform GET requests with logging and metrics
+function performGetRequest(endpoint, name) {
+    const url = `${BASE_URL}${endpoint}`;
     let res = http.get(url);
 
-    // Yanıtı kontrol etme ve hataları ele alma
     let isStatus200 = check(res, {
         'status is 200': (r) => r.status === 200,
         'response body is not empty': (r) => r.body.length > 0,
     });
 
-    // Loglama
     if (isStatus200) {
-        console.log(`Successfully accessed ${url} in ${res.timings.duration}ms. Response body length: ${res.body.length} bytes`);
-        successRate.add(1); // Başarılı istek oranı arttırılır
-        errorRate.add(0); // Hatalı istek oranı azaltılır
+        successRate.add(1);
+        errorRate.add(0);
     } else {
-        console.error(`Failed to access ${url}. Status code: ${res.status}. Response time: ${res.timings.duration}ms`);
-        errorCount.add(1); // Hata sayacı bir arttırılır
-        successRate.add(0); // Başarısız istek oranı eklenir
-        errorRate.add(1); // Hatalı istek oranı arttırılır
+        errorCount.add(1);
+        successRate.add(0);
+        errorRate.add(1);
     }
 
-    // Yanıt süresi metriği kaydetme
-    responseTimes.add(res.timings.duration); // Yanıt süresi metriğe eklenir
+    responseTimes.add(res.timings.duration);
 
-    // Ekstra bilgileri loglama
-
-    console.log(`**************************************************`);
     console.log(`Request URL: ${url}`);
-    console.log(`Request headers: ${JSON.stringify(res.request.headers)}`);
-    console.log(`Response headers: ${JSON.stringify(res.headers)}\n`);
-    console.log(`**************************************************`);
-    sleep(1); // Sanal kullanıcıyı 1 saniye bekletir
+    console.log(`Status: ${res.status}, Duration: ${res.timings.duration}ms`);
+    sleep(1); // Wait for 1 second before next request
+}
+
+// K6 scenarios mapped to Locust tasks
+export function housingLoanHomepage() {
+    performGetRequest("/kredi/konut-kredisi", "HousingLoan Home");
+}
+
+export function housingLoanSearch() {
+    let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12; // Random from 12, 24, ..., 120
+    let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000; // Random from 100000, 150000, ..., 500000
+    performGetRequest(`/kredi/konut-kredisi/sorgulama?amount=${amount}&maturity=${maturity}`, "HousingLoan List");
+}
+
+export function housingLoanDetail() {
+    let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
+    performGetRequest(`/kredi/konut-kredisi/akbank/konut-kredisi?amount=${amount}&maturity=${maturity}`, "HousingLoan Detail");
+}
+
+export function housingLoanRecourseForward() {
+    let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
+    performGetRequest(`/kredi/konut-kredisi/ing-bank/basvuru/yonlendirme?id=77&ct=List&amount=${amount}&maturity=${maturity}`, "HousingLoan Forward");
+}
+
+export function housingLoanRecourseForm() {
+    let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
+    performGetRequest(`/kredi/konut-kredisi/akbank/basvuru/form?id=81&ct=List&activityStatus=All&amount=${amount}&maturity=${maturity}`, "HousingLoan Form");
+}
+
+export function housingLoanBankList() {
+    let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
+    performGetRequest(`/kredi/konut-kredisi/turkiye-is-bankasi?amount=${amount}&maturity=${maturity}`, "HousingLoan Bank List");
+}
+
+export function vehicleLoanHomepage() {
+    performGetRequest("/kredi/tasit-kredisi", "VehicleLoan Home");
+}
+
+export function vehicleLoanSearch() {
+    let maturity = Math.floor(Math.random() * (36 - 12) / 12) * 12 + 12; // Random from 12, 24, 36
+    let amount = Math.floor(Math.random() * (400000 - 100000) / 25000) * 25000 + 100000; // Random from 100000, 125000, ..., 400000
+    performGetRequest(`/kredi/tasit-kredisi/sorgulama?amount=${amount}&maturity=${maturity}&CarStatus=2&VehicleExist=0`, "VehicleLoan List");
+}
+
+export function vehicleLoanDetail() {
+    let maturity = Math.floor(Math.random() * (36 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (400000 - 100000) / 25000) * 25000 + 100000;
+    performGetRequest(`/kredi/tasit-kredisi/garanti-bankasi/tasit-kredisi?amount=${amount}&maturity=${maturity}`, "VehicleLoan Detail");
+}
+
+export function vehicleLoanRecourseForward() {
+    let maturity = Math.floor(Math.random() * (36 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (400000 - 100000) / 25000) * 25000 + 100000;
+    performGetRequest(`/kredi/tasit-kredisi/turkiye-is-bankasi/basvuru/yonlendirme?id=98&ct=List&amount=${amount}&maturity=${maturity}`, "VehicleLoan Forward");
+}
+
+export function vehicleLoanRecourseForm() {
+    let maturity = Math.floor(Math.random() * (36 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (400000 - 100000) / 25000) * 25000 + 100000;
+    performGetRequest(`/kredi/tasit-kredisi/yapi-kredi/basvuru/form?id=89&ct=List&activityStatus=All&amount=${amount}&maturity=${maturity}`, "VehicleLoan Form");
+}
+
+export function vehicleLoanBankList() {
+    let maturity = Math.floor(Math.random() * (36 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (400000 - 100000) / 25000) * 25000 + 100000;
+    performGetRequest(`/kredi/tasit-kredisi/turkiye-is-bankasi?amount=${amount}&maturity=${maturity}`, "VehicleLoan Bank List");
 }
