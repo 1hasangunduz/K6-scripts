@@ -23,3 +23,13 @@
 ```
 
 ```javascript
+
+"k6 run --vus 10 --iterations 40 script.js"
+* "--vus 10: 'VUS' (Virtual Users), sanal kullanıcı sayısını belirtir. Bu durumda, 10 sanal kullanıcı testi aynı anda gerçekleştirir."
+* "--iterations 40: Her bir sanal kullanıcının yapacağı toplam işlem sayısını belirtir. Burada, her sanal kullanıcı 40 kez işlem yapacak şekilde test edilecektir."
+"k6 run --vus 10 --duration 30s script.js"
+"k6 run --vus 10 --duration 30s --out influxdb=http://localhost:8086/myk6db script.js"
+
+```
+
+```javascript
