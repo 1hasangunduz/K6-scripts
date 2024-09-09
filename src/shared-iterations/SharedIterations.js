@@ -3,105 +3,105 @@ import { check, sleep } from 'k6';
 import { Counter, Trend, Rate } from 'k6/metrics';
 
 // Custom metrics monitoring
-let responseTimes = new Trend('custom_response_times'); // Custom response time ölçmek için Trend metriği
-let errorCount = new Counter('errors'); // Errors sayısını saymak için Counter metriği
-let successRate = new Rate('successful_requests'); // Başarılı isteklerin(success rate) oranını ölçmek için Rate metriği
-let errorRate = new Rate('error_requests'); // Hatalı isteklerin(error rate) oranını ölçmek için Rate metriği
+let responseTimes = new Trend('custom_response_times'); // Yanıt sürelerini ölçmek için Trend metriği
+let errorCount = new Counter('errors'); // Hatalı istek sayısını ölçmek için Counter metriği
+let successRate = new Rate('successful_requests'); // Başarılı istek oranını ölçmek için Rate metriği
+let errorRate = new Rate('error_requests'); // Hatalı istek oranını ölçmek için Rate metriği
 
+//shared-iterations executor'ı, belirli bir sayıda toplam iterasyonu tüm sanal kullanıcılara paylaştırır. Her sanal kullanıcı, toplam iterasyon sayısına katkıda bulunur.
+//Toplamda 50 iterasyon gerçekleştirilecektir. 10 sanal kullanıcı bu iterasyonları paylaştırır. Test, 5 dakika boyunca çalışabilir.
 export const options = {
     scenarios: {
-        // Konut kredisi ana sayfa senaryosu
         housingloan_homepage: {
-            executor: 'constant-vus', // Sabit sanal kullanıcı sayısıyla çalışan yürütücü
+            executor: 'shared-iterations',
+            vus: 10, // Sanal kullanıcı sayısı
+            iterations: 50, // Toplam iterasyon sayısı
+            maxDuration: '5m', // Maksimum süre
             exec: 'housingLoanHomepage', // Çalıştırılacak fonksiyonun adı
-            vus: 15, // Sanal kullanıcı sayısı
-            duration: '1m', // Duration of the scenario
         },
-        // Konut kredisi arama senaryosu
         housingloan_search: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'housingLoanSearch',
-            vus: 25,
-            duration: '1m',
         },
-        // Konut kredisi detay senaryosu
         housingloan_detail: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'housingLoanDetail',
-            vus: 35,
-            duration: '1m',
         },
-        // Konut kredisi başvuru yönlendirme senaryosu
         housingloan_recourse_forward: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'housingLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
         },
-        // Konut kredisi başvuru formu senaryosu
         housingloan_recourse_form: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'housingLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
         },
-        // Konut kredisi banka listesi senaryosu
         housingloan_bank_list: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'housingLoanBankList',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi ana sayfa senaryosu
         vehicleloan_homepage: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'vehicleLoanHomepage',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi arama senaryosu
         vehicleloan_search: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'vehicleLoanSearch',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi detay senaryosu
         vehicleloan_detail: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'vehicleLoanDetail',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi başvuru yönlendirme senaryosu
         vehicleloan_recourse_forward: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'vehicleLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi başvuru formu senaryosu
         vehicleloan_recourse_form: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'vehicleLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi banka listesi senaryosu
         vehicleloan_bank_list: {
-            executor: 'constant-vus',
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 50,
+            maxDuration: '5m',
             exec: 'vehicleLoanBankList',
-            vus: 5,
-            duration: '1m',
-        }
+        },
     },
     thresholds: {
-        custom_response_times: ['p(95)<250'], // Tepki süreleri için %95 percentilinin 250ms altında olması
+        custom_response_times: ['p(95)<250'], // Tepki sürelerinin %95 percentilinin 250ms altında olması
         successful_requests: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
         error_requests: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
         errors: ['count<20'], // Toplam hata sayısının 20'den az olması
-        //successRate: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
-        //errorRate: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
     },
 };
 
@@ -131,34 +131,32 @@ function performGetRequest(endpoint, name) {
 
     responseTimes.add(res.timings.duration); // Yanıt süresi metriğine ekleme
 
-    // Konsola isteğin URL'si ve yanıt durumu ile süresi yazdırılır
-    //console.log(`Request URL: ${url}`);
-    //console.log(`Status: ${res.status}, Duration: ${res.timings.duration}ms`);
-    sleep(1); // Bir sonraki istek öncesinde 1 saniye bekleme
+    // Konsolda yanıt durumunu yazdırır
+    console.log(`${name}: ${res.status} - ${res.timings.duration}ms`);
+    sleep(1); // İstekler arasında 1 saniye bekler
 }
 
-
-// K6 senaryolarının fonksiyonlarla eşleştirilmesi
+// İlgili işlevlerin tanımlanması
 export function housingLoanHomepage() {
-    performGetRequest("/kredi/konut-kredisi", "HousingLoan Home");
+    performGetRequest(`/kredi/konut-kredisi`, "HousingLoan Homepage");
 }
 
 export function housingLoanSearch() {
-    let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12; // 12, 24, ..., 120 arasında rastgele bir vade seçimi
-    let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000; // 100000, 150000, ..., 500000 arasında rastgele bir tutar seçimi
-    performGetRequest(`/kredi/konut-kredisi/sorgulama?amount=${amount}&maturity=${maturity}`, "HousingLoan List");
+    let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
+    performGetRequest(`/kredi/konut-kredisi/sorgulama?amount=${amount}&maturity=${maturity}`, "HousingLoan Search");
 }
 
 export function housingLoanDetail() {
     let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
     let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
-    performGetRequest(`/kredi/konut-kredisi/akbank/konut-kredisi?amount=${amount}&maturity=${maturity}`, "HousingLoan Detail");
+    performGetRequest(`/kredi/konut-kredisi/akbank/tasit-kredisi?amount=${amount}&maturity=${maturity}`, "HousingLoan Detail");
 }
 
 export function housingLoanRecourseForward() {
     let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
     let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
-    performGetRequest(`/kredi/konut-kredisi/ing-bank/basvuru/yonlendirme?id=77&ct=List&amount=${amount}&maturity=${maturity}`, "HousingLoan Forward");
+    performGetRequest(`/kredi/konut-kredisi/qnb-finansbank/basvuru/yonlendirme?id=84&ct=List&amount=${amount}&maturity=${maturity}`, "HousingLoan Forward");
 }
 
 export function housingLoanRecourseForm() {
@@ -174,12 +172,12 @@ export function housingLoanBankList() {
 }
 
 export function vehicleLoanHomepage() {
-    performGetRequest("/kredi/tasit-kredisi", "VehicleLoan Home");
+    performGetRequest(`/kredi/tasit-kredisi`, "VehicleLoan Home");
 }
 
 export function vehicleLoanSearch() {
-    let maturity = Math.floor(Math.random() * (36 - 12) / 12) * 12 + 12; // 12, 24, 36 arasında rastgele bir vade seçimi
-    let amount = Math.floor(Math.random() * (400000 - 100000) / 25000) * 25000 + 100000; // 100000, 125000, ..., 400000 arasında rastgele bir tutar seçimi
+    let maturity = Math.floor(Math.random() * (36 - 12) / 12) * 12 + 12;
+    let amount = Math.floor(Math.random() * (400000 - 100000) / 25000) * 25000 + 100000;
     performGetRequest(`/kredi/tasit-kredisi/sorgulama?amount=${amount}&maturity=${maturity}`, "VehicleLoan List");
 }
 

@@ -8,91 +8,93 @@ let errorCount = new Counter('errors'); // Errors sayısını saymak için Count
 let successRate = new Rate('successful_requests'); // Başarılı isteklerin(success rate) oranını ölçmek için Rate metriği
 let errorRate = new Rate('error_requests'); // Hatalı isteklerin(error rate) oranını ölçmek için Rate metriği
 
+//per-vu-iterations executor'ı, her sanal kullanıcının belirli bir sayıda iterasyon gerçekleştirmesini sağlar. Bu tür, her kullanıcının belirli sayıda işlem yapmasını simüle eder.
+//Her bir sanal kullanıcı, 10 iterasyon gerçekleştirecek şekilde yapılandırılmıştır. Toplamda 10 kullanıcı bu iterasyonları yaparak sistemin performansını test eder.
 export const options = {
     scenarios: {
-        // Konut kredisi ana sayfa senaryosu
         housingloan_homepage: {
-            executor: 'constant-vus', // Sabit sanal kullanıcı sayısıyla çalışan yürütücü
-            exec: 'housingLoanHomepage', // Çalıştırılacak fonksiyonun adı
-            vus: 15, // Sanal kullanıcı sayısı
-            duration: '1m', // Duration of the scenario
+            executor: 'per-vu-iterations', // Her sanal kullanıcı için belirli iterasyon sayısı
+            vus: 10, // Sanal kullanıcı sayısı
+            iterations: 10, // Her kullanıcı için iterasyon sayısı
+            maxDuration: '1m', // Senaryonun maksimum süresi
+            exec: 'housingLoanHomepage' // Çalıştırılacak fonksiyonun adı
         },
-        // Konut kredisi arama senaryosu
         housingloan_search: {
-            executor: 'constant-vus',
-            exec: 'housingLoanSearch',
-            vus: 25,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'housingLoanSearch'
         },
-        // Konut kredisi detay senaryosu
         housingloan_detail: {
-            executor: 'constant-vus',
-            exec: 'housingLoanDetail',
-            vus: 35,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'housingLoanDetail'
         },
-        // Konut kredisi başvuru yönlendirme senaryosu
         housingloan_recourse_forward: {
-            executor: 'constant-vus',
-            exec: 'housingLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'housingLoanRecourseForward'
         },
-        // Konut kredisi başvuru formu senaryosu
         housingloan_recourse_form: {
-            executor: 'constant-vus',
-            exec: 'housingLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'housingLoanRecourseForm'
         },
-        // Konut kredisi banka listesi senaryosu
         housingloan_bank_list: {
-            executor: 'constant-vus',
-            exec: 'housingLoanBankList',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'housingLoanBankList'
         },
-        // Taşıt kredisi ana sayfa senaryosu
         vehicleloan_homepage: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanHomepage',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'vehicleLoanHomepage'
         },
-        // Taşıt kredisi arama senaryosu
         vehicleloan_search: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanSearch',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'vehicleLoanSearch'
         },
-        // Taşıt kredisi detay senaryosu
         vehicleloan_detail: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanDetail',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'vehicleLoanDetail'
         },
-        // Taşıt kredisi başvuru yönlendirme senaryosu
         vehicleloan_recourse_forward: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'vehicleLoanRecourseForward'
         },
-        // Taşıt kredisi başvuru formu senaryosu
         vehicleloan_recourse_form: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'vehicleLoanRecourseForm'
         },
-        // Taşıt kredisi banka listesi senaryosu
         vehicleloan_bank_list: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanBankList',
-            vus: 5,
-            duration: '1m',
+            executor: 'per-vu-iterations',
+            vus: 10,
+            iterations: 10,
+            maxDuration: '1m',
+            exec: 'vehicleLoanBankList'
         }
     },
     thresholds: {
@@ -100,8 +102,6 @@ export const options = {
         successful_requests: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
         error_requests: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
         errors: ['count<20'], // Toplam hata sayısının 20'den az olması
-        //successRate: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
-        //errorRate: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
     },
 };
 

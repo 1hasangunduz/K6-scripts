@@ -8,100 +8,150 @@ let errorCount = new Counter('errors'); // Errors sayısını saymak için Count
 let successRate = new Rate('successful_requests'); // Başarılı isteklerin(success rate) oranını ölçmek için Rate metriği
 let errorRate = new Rate('error_requests'); // Hatalı isteklerin(error rate) oranını ölçmek için Rate metriği
 
+// distribute-arrival-rate executor'ı, isteklerin belirli bir dağıtım modeline göre simüle edilmesini sağlar. Bu tür, isteklerin zaman içinde nasıl dağıldığını kontrol etmenizi sağlar.
+// Bu yapılandırma, istek oranını zaman içinde belirli bir dağıtım modeline göre ayarlar. Başlangıçta 0.5 oranında istek yapılır ve 30 saniye sonra bu oran 1'e çıkar.
 export const options = {
     scenarios: {
-        // Konut kredisi ana sayfa senaryosu
         housingloan_homepage: {
-            executor: 'constant-vus', // Sabit sanal kullanıcı sayısıyla çalışan yürütücü
+            executor: 'distribute-arrival-rate',
+            rate: 10, //  Saniyede kaç istek yapılacağını belirtir. Bu, temel istek oranını belirler ve zaman içindeki dağılım bu oranı etkiler.
+            timeUnit: '1s', // Zaman birimi
+            duration: '2m', // Testin toplam Süresi
+            distribution: { //İsteklerin zamanla nasıl dağıtılacağını belirler. Burada, ilk 0 saniyede istek oranı 0.5, 30 saniye sonra ise tam 1 oranında istek yapılacak.
+                '0s': 0.5, // İlk 0 saniyede yarım oranında istek
+                '30s': 1,   // 30 saniye sonra tam oranında istek
+                '1m': 0.5,   // 1 dakikada oran
+                '1m30s': 0.1 // 1 dakika 30 saniyede oran
+            },
             exec: 'housingLoanHomepage', // Çalıştırılacak fonksiyonun adı
-            vus: 15, // Sanal kullanıcı sayısı
-            duration: '1m', // Duration of the scenario
         },
-        // Konut kredisi arama senaryosu
         housingloan_search: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'housingLoanSearch',
-            vus: 25,
-            duration: '1m',
         },
-        // Konut kredisi detay senaryosu
         housingloan_detail: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'housingLoanDetail',
-            vus: 35,
-            duration: '1m',
         },
-        // Konut kredisi başvuru yönlendirme senaryosu
         housingloan_recourse_forward: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'housingLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
         },
-        // Konut kredisi başvuru formu senaryosu
         housingloan_recourse_form: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'housingLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
         },
-        // Konut kredisi banka listesi senaryosu
         housingloan_bank_list: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'housingLoanBankList',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi ana sayfa senaryosu
         vehicleloan_homepage: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'vehicleLoanHomepage',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi arama senaryosu
         vehicleloan_search: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'vehicleLoanSearch',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi detay senaryosu
         vehicleloan_detail: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'vehicleLoanDetail',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi başvuru yönlendirme senaryosu
         vehicleloan_recourse_forward: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'vehicleLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi başvuru formu senaryosu
         vehicleloan_recourse_form: {
-            executor: 'constant-vus',
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
+            duration: '1m',
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
             exec: 'vehicleLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi banka listesi senaryosu
         vehicleloan_bank_list: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanBankList',
-            vus: 5,
+            executor: 'distribute-arrival-rate',
+            rate: 10,
+            timeUnit: '1s',
             duration: '1m',
-        }
+            distribution: {
+                '0s': 0.5,
+                '30s': 1,
+            },
+            exec: 'vehicleLoanBankList',
+        },
     },
     thresholds: {
         custom_response_times: ['p(95)<250'], // Tepki süreleri için %95 percentilinin 250ms altında olması
         successful_requests: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
         error_requests: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
         errors: ['count<20'], // Toplam hata sayısının 20'den az olması
-        //successRate: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
-        //errorRate: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
     },
 };
 
@@ -158,7 +208,7 @@ export function housingLoanDetail() {
 export function housingLoanRecourseForward() {
     let maturity = Math.floor(Math.random() * (120 - 12) / 12) * 12 + 12;
     let amount = Math.floor(Math.random() * (500000 - 100000) / 50000) * 50000 + 100000;
-    performGetRequest(`/kredi/konut-kredisi/ing-bank/basvuru/yonlendirme?id=77&ct=List&amount=${amount}&maturity=${maturity}`, "HousingLoan Forward");
+    performGetRequest(`/kredi/konut-kredisi/qnb-finansbank/basvuru/yonlendirme?id=84&ct=List&amount=${amount}&maturity=${maturity}`, "HousingLoan Forward");
 }
 
 export function housingLoanRecourseForm() {

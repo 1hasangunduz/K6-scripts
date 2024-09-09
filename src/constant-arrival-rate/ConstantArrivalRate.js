@@ -8,100 +8,125 @@ let errorCount = new Counter('errors'); // Errors sayısını saymak için Count
 let successRate = new Rate('successful_requests'); // Başarılı isteklerin(success rate) oranını ölçmek için Rate metriği
 let errorRate = new Rate('error_requests'); // Hatalı isteklerin(error rate) oranını ölçmek için Rate metriği
 
+//constant-arrival-rate executor'ı, belirli bir süre boyunca sabit bir istek oranını korur.
+//Bu tür, belirli bir istek sıklığını simüle eder ve sistemin bu yük altında nasıl performans gösterdiğini değerlendirir.
+//Bu yapılandırma, saniyede 5 istek gönderen bir yük oluşturur ve bunu 1 dakika boyunca sürdürür. Başlangıçta 10 sanal kullanıcı tahsis edilir ve gerektiğinde 20'ye kadar çıkabilir.
 export const options = {
     scenarios: {
-        // Konut kredisi ana sayfa senaryosu
         housingloan_homepage: {
-            executor: 'constant-vus', // Sabit sanal kullanıcı sayısıyla çalışan yürütücü
+            executor: 'constant-arrival-rate', // İsteklerin belirli bir hızda gönderilmesi
+            rate: 5, // Saniyede 5 istek
+            timeUnit: '1s', // Zaman birimi
+            duration: '1m', // Süre
+            preAllocatedVUs: 10, // Başlangıçta tahsis edilen VU sayısı
+            maxVUs: 20, // Maksimum VU sayısı
             exec: 'housingLoanHomepage', // Çalıştırılacak fonksiyonun adı
-            vus: 15, // Sanal kullanıcı sayısı
-            duration: '1m', // Duration of the scenario
         },
-        // Konut kredisi arama senaryosu
         housingloan_search: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'housingLoanSearch',
-            vus: 25,
-            duration: '1m',
         },
-        // Konut kredisi detay senaryosu
         housingloan_detail: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'housingLoanDetail',
-            vus: 35,
-            duration: '1m',
         },
-        // Konut kredisi başvuru yönlendirme senaryosu
         housingloan_recourse_forward: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'housingLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
         },
-        // Konut kredisi başvuru formu senaryosu
         housingloan_recourse_form: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'housingLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
         },
-        // Konut kredisi banka listesi senaryosu
         housingloan_bank_list: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'housingLoanBankList',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi ana sayfa senaryosu
         vehicleloan_homepage: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'vehicleLoanHomepage',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi arama senaryosu
         vehicleloan_search: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'vehicleLoanSearch',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi detay senaryosu
         vehicleloan_detail: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'vehicleLoanDetail',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi başvuru yönlendirme senaryosu
         vehicleloan_recourse_forward: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'vehicleLoanRecourseForward',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi başvuru formu senaryosu
         vehicleloan_recourse_form: {
-            executor: 'constant-vus',
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
+            duration: '1m',
+            preAllocatedVUs: 10,
+            maxVUs: 20,
             exec: 'vehicleLoanRecourseForm',
-            vus: 5,
-            duration: '1m',
         },
-        // Taşıt kredisi banka listesi senaryosu
         vehicleloan_bank_list: {
-            executor: 'constant-vus',
-            exec: 'vehicleLoanBankList',
-            vus: 5,
+            executor: 'constant-arrival-rate',
+            rate: 5,
+            timeUnit: '1s',
             duration: '1m',
-        }
+            preAllocatedVUs: 10,
+            maxVUs: 20,
+            exec: 'vehicleLoanBankList',
+        },
     },
     thresholds: {
         custom_response_times: ['p(95)<250'], // Tepki süreleri için %95 percentilinin 250ms altında olması
         successful_requests: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
         error_requests: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
         errors: ['count<20'], // Toplam hata sayısının 20'den az olması
-        //successRate: ['rate>0.95'], // Başarılı istek oranının %95'ten yüksek olması
-        //errorRate: ['rate<0.05'], // Hatalı istek oranının %5'ten düşük olması
     },
 };
 

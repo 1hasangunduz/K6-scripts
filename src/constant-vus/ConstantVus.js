@@ -8,6 +8,7 @@ let errorCount = new Counter('errors'); // Errors sayısını saymak için Count
 let successRate = new Rate('successful_requests'); // Başarılı isteklerin(success rate) oranını ölçmek için Rate metriği
 let errorRate = new Rate('error_requests'); // Hatalı isteklerin(error rate) oranını ölçmek için Rate metriği
 
+// executor: 'constant-vus' : 1 dakika boyunca 15 sanal kullanıcı ile test yapar.
 export const options = {
     scenarios: {
         // Konut kredisi ana sayfa senaryosu
@@ -70,7 +71,7 @@ export const options = {
         vehicleloan_detail: {
             executor: 'constant-vus',
             exec: 'vehicleLoanDetail',
-            vus: 5,
+            vus: 15,
             duration: '1m',
         },
         // Taşıt kredisi başvuru yönlendirme senaryosu

@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { randomIntBetween } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
+import { randomIntBetween } from 'https://jslib.k6.io/k6-utility/1.4.0/index.js';
 
 // Options for the test
 export let options = {
